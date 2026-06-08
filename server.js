@@ -115,23 +115,14 @@ async function geminiText(prompt) {
 // ── Gemini audio ──────────────────────────────────────────────────
 async function geminiAudio(audioBase64, mimeType) {
   return new Promise((resolve, reject) => {
+    const now = new Date();
+    const mesAtual = now.getMonth()+1;
+    const anoAtual = now.getFullYear();
+    const promptText = `Transcreva este audio e interprete como uma tarefa de agencia de marketing. Retorne APENAS JSON valido sem markdown, sem explicacoes, sem \`\`\`.\n\n{"transcricao":"texto exato do audio","texto":"descricao clara da tarefa","urgente":false,"importante":false,"tag":null,"temFinanceiro":false,"cliente":"nome do cliente ou Cliente Avulso","valor":0,"vencimento":null,"tipo":"pontual","checklist":[]}\n\nRegras:\n- transcricao: texto exato do que foi dito\n- texto: descricao clara da tarefa (NAO use "Tarefa de audio")\n- temFinanceiro: true se mencionar valor, R$, pagamento, cliente\n- cliente: nome do cliente mencionado ou "Cliente Avulso"\n- valor: apenas o numero\n- vencimento: DD/MM/AAAA ou null. "dia 15" = 15/${mesAtual < 10 ? '0'+mesAtual : mesAtual}/${anoAtual}\n- tipo: "mensal" se recorrente, senao "pontual"`;
     const body = JSON.stringify({
       contents:[{parts:[
         {inline_data:{mime_type:mimeType,data:audioBase64}},
-        {text:`Transcreva este áudio e extraia as informações. Retorne APENAS JSON válido sem markdown:
-{
-  "transcricao": "texto do áudio",
-  "texto": "descrição da tarefa",
-  "urgente": false,
-  "importante": false,
-  "tag": null,
-  "temFinanceiro": false,
-  "cliente": null,
-  "valor": null,
-  "vencimento": null,
-  "tipo": "pontual",
-  "checklist": []
-}`}
+        {text: promptText}
       ]}],
       generationConfig:{temperature:0.1}
     });
@@ -156,28 +147,10 @@ async function geminiAudio(audioBase64, mimeType) {
 
 // ── Parse task prompt ─────────────────────────────────────────────
 async function parseTaskPrompt(text) {
-  const prompt = `Analise o texto e retorne APENAS JSON válido sem markdown:
-{
-  "texto": "descrição clara da tarefa",
-  "urgente": false,
-  "importante": false,
-  "tag": null,
-  "temFinanceiro": false,
-  "cliente": null,
-  "valor": null,
-  "vencimento": "DD/MM/AAAA ou null",
-  "tipo": "mensal ou pontual",
-  "checklist": ["item1","item2"]
-}
-
-Regras:
-- Se mencionar cliente, valor, pagamento → temFinanceiro: true
-- Se mencionar urgente/urgência → urgente: true  
-- Se mencionar importante → importante: true
-- checklist: quebre em itens acionáveis se houver múltiplos serviços
-- texto: frase curta descrevendo a tarefa principal
-
-Texto: "${text}"`;
+  const now = new Date();
+  const mesAtual = now.getMonth()+1;
+  const anoAtual = now.getFullYear();
+  const prompt = `Voce e assistente de uma agencia de marketing. Analise o texto e retorne APENAS JSON valido sem markdown, sem explicacoes, sem ```.\n\nTexto: "${text}"\n\nRetorne exatamente este JSON:\n{"texto":"descricao curta da tarefa","urgente":false,"importante":false,"tag":null,"temFinanceiro":false,"cliente":"nome do cliente ou Cliente Avulso","valor":0,"vencimento":null,"tipo":"pontual","checklist":[]}\n\nRegras:\n- temFinanceiro: true se mencionar valor, R$, reais, pagamento, vencimento ou nome de cliente\n- cliente: extraia o nome. Se nao houver nome claro use "Cliente Avulso"\n- valor: so o numero. R$1000=1000, 90 reais=90\n- vencimento: formato DD/MM/AAAA. "dia 15" = 15/${mesAtual < 10 ? '0'+mesAtual : mesAtual}/${anoAtual}\n- tipo: "mensal" se mencionar mensal ou recorrente, senao "pontual"\n- checklist: liste cada servico separado se houver multiplos`;
   const raw = await geminiText(prompt);
   return JSON.parse(raw);
 }
@@ -242,13 +215,13 @@ app.post('/api/parse-text', async (req,res) => {
     await sheetWrite('Tarefas', tasks);
 
     let finEntry = null;
-    if (parsed.temFinanceiro && parsed.cliente) {
+    if (parsed.temFinanceiro) {
       finEntry = {
-        id: id+'_fin', cliente:parsed.cliente,
-        descricao:parsed.texto||text,
-        valor:parsed.valor||0,
-        vencimento:parsed.vencimento||'',
-        status:'pendente', tipo:parsed.tipo||'pontual',
+        id: id+'_fin', cliente: parsed.cliente || 'Cliente Avulso',
+        descricao: parsed.texto||text,
+        valor: parsed.valor||0,
+        vencimento: parsed.vencimento||'',
+        status:'pendente', tipo: parsed.tipo||'pontual',
         servicoId:''
       };
       const fin = await sheetRead('Financeiro');
@@ -271,7 +244,7 @@ app.post('/api/parse-audio', upload.single('audio'), async (req,res) => {
     const now = new Date().toLocaleDateString('pt-BR');
 
     const task = {
-      id, texto:parsed.texto||parsed.transcricao||'Tarefa de áudio',
+      id, texto: parsed.texto || parsed.transcricao || 'Tarefa',
       feito:'false', urgente:String(!!parsed.urgente),
       importante:String(!!parsed.importante),
       tag:parsed.tag||'', criadoEm:now, concluidoEm:'',
@@ -283,9 +256,9 @@ app.post('/api/parse-audio', upload.single('audio'), async (req,res) => {
     await sheetWrite('Tarefas', tasks);
 
     let finEntry = null;
-    if (parsed.temFinanceiro && parsed.cliente) {
+    if (parsed.temFinanceiro) {
       finEntry = {
-        id:id+'_fin', cliente:parsed.cliente,
+        id:id+'_fin', cliente: parsed.cliente || 'Cliente Avulso',
         descricao:task.texto, valor:parsed.valor||0,
         vencimento:parsed.vencimento||'',
         status:'pendente', tipo:parsed.tipo||'pontual', servicoId:''
