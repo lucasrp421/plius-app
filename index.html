@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Plius</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg: #0a0b0e;
+  --surface: #13151c;
+  --surface2: #1a1d27;
+  --border: rgba(255,255,255,0.08);
+  --border-bright: rgba(255,255,255,0.14);
+  --accent: #22d3a5;
+  --accent-dim: rgba(34,211,165,0.12);
+  --blue: #818cf8;
+  --orange: #fb923c;
+  --danger: #f87171;
+  --text: #e8eaf0;
+  --muted: rgba(232,234,240,0.5);
+  --dim: rgba(232,234,240,0.25);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;}
+
+/* Header */
+.header{background:var(--surface);padding:14px 16px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.header-logo{height:18px;width:auto;opacity:0.9;}
+.header-title{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);flex:1;}
+.sync-indicator{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;transition:all 0.3s;}
+.sync-indicator.syncing{background:var(--orange);animation:blink 0.8s infinite;}
+.sync-indicator.error{background:var(--danger);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;};}
+
+/* Tabs */
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:99;}
+.tab{flex:1;padding:11px 0;font-size:10.5px;font-weight:600;letter-spacing:0.04em;color:var(--muted);text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* Content */
+.content{flex:1;overflow-y:auto;padding:12px;}
+
+/* AI Input area */
+.ai-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:14px;}
+.ai-row{display:flex;gap:8px;align-items:flex-end;}
+.ai-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Sora',sans-serif;font-size:13px;padding:10px 12px;resize:none;outline:none;min-height:42px;max-height:100px;line-height:1.5;field-sizing:content;}
+.ai-input:focus{border-color:rgba(34,211,165,0.35);}
+.ai-input::placeholder{color:var(--dim);}
+.ai-btns{display:flex;gap:6px;flex-shrink:0;}
+.btn-send{width:42px;height:42px;border-radius:11px;border:none;background:var(--accent);color:#0a0b0e;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;transition:all 0.15s;flex-shrink:0;}
+.btn-send:active{transform:scale(0.95);}
+.btn-send:disabled{opacity:0.4;}
+.btn-mic{width:42px;height:42px;border-radius:11px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.15s;flex-shrink:0;}
+.btn-mic.recording{background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.4);color:var(--danger);animation:pulse-red 1s infinite;}
+@keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0.3);}50%{box-shadow:0 0 0 6px rgba(248,113,113,0);}}
+.ai-hint{font-size:10px;color:var(--dim);margin-top:7px;line-height:1.5;}
+.transcricao{font-size:10.5px;color:var(--muted);background:var(--surface2);border-radius:7px;padding:6px 9px;margin-top:7px;display:none;}
+.transcricao.show{display:block;}
+
+/* Filter */
+.filter-row{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
+.fbtn{padding:4px 10px;border-radius:7px;border:1px solid transparent;background:transparent;color:var(--dim);font-family:'Sora',sans-serif;font-size:10px;font-weight:600;cursor:pointer;transition:all 0.12s;}
+.fbtn.active{background:var(--surface);border-color:var(--border-bright);color:var(--muted);}
+
+/* Task card */
+.task-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 13px;margin-bottom:8px;transition:border-color 0.15s;}
+.task-card:active{border-color:var(--border-bright);}
+.task-row{display:flex;align-items:flex-start;gap:10px;}
+.tcheck{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border-bright);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;margin-top:1px;}
+.tcheck.checked{background:var(--accent);border-color:var(--accent);}
+.tcheck.checked::after{content:'✓';color:#0a0b0e;font-size:12px;font-weight:700;}
+.task-body{flex:1;min-width:0;}
+.task-text{font-size:13px;line-height:1.5;color:var(--text);word-break:break-word;}
+.task-card.done .task-text{text-decoration:line-through;color:var(--muted);}
+.task-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;align-items:center;}
+.ttag{padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600;}
+.ttag.urgente{background:rgba(248,113,113,0.1);color:var(--danger);}
+.ttag.importante{background:rgba(129,140,248,0.12);color:var(--blue);}
+.ttag.custom{background:var(--accent-dim);color:var(--accent);}
+.tdate{font-size:9px;color:var(--dim);}
+.task-del{width:28px;height:28px;border-radius:7px;border:none;background:transparent;color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:all 0.1s;}
+.task-del:active{color:var(--danger);background:rgba(248,113,113,0.1);}
+
+/* Subtasks */
+.subtasks{margin-top:8px;padding-left:30px;display:flex;flex-direction:column;gap:3px;}
+.subi{display:flex;align-items:center;gap:7px;}
+.subi-check{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border-bright);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.subi-check.checked{background:var(--accent);border-color:var(--accent);}
+.subi-check.checked::after{content:'✓';color:#0a0b0e;font-size:8px;font-weight:700;}
+.subi-text{font-size:11px;color:var(--muted);}
+
+/* Fin card */
+.fin-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px;}
+.fkpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 11px;}
+.fkpi-lbl{font-size:8.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim);}
+.fkpi-val{font-size:16px;font-weight:700;margin-top:3px;}
+.fkpi-val.green{color:var(--accent);}
+.fkpi-val.blue{color:var(--blue);}
+.fkpi-val.orange{color:var(--orange);}
+.fin-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;gap:10px;}
+.fcheck{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border-bright);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;}
+.fcheck.checked{background:var(--accent);border-color:var(--accent);}
+.fcheck.checked::after{content:'✓';color:#0a0b0e;font-size:13px;font-weight:700;}
+.fin-info{flex:1;min-width:0;}
+.fin-cliente{font-size:12.5px;font-weight:600;}
+.fin-desc{font-size:10px;color:var(--muted);margin-top:1px;}
+.fin-right{text-align:right;flex-shrink:0;}
+.fin-val{font-size:14px;font-weight:700;color:var(--accent);}
+.fin-date{font-size:9px;color:var(--dim);}
+.fbadge{padding:2px 6px;border-radius:4px;font-size:8px;font-weight:700;text-transform:uppercase;display:inline-block;margin-top:2px;}
+.fbadge.pago{background:rgba(34,211,165,0.1);color:var(--accent);}
+.fbadge.pendente{background:rgba(251,146,60,0.1);color:var(--orange);}
+.fbadge.atrasado{background:rgba(248,113,113,0.15);color:var(--danger);}
+
+/* Empty */
+.empty{text-align:center;padding:40px 20px;color:var(--dim);}
+.empty-icon{font-size:32px;margin-bottom:10px;opacity:0.4;}
+.empty-text{font-size:12px;line-height:1.7;}
+
+/* Loading */
+.loading{text-align:center;padding:30px;color:var(--muted);font-size:12px;}
+.spinner{width:20px;height:20px;border:2px solid var(--border-bright);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid rgba(34,211,165,0.3);border-radius:10px;padding:9px 18px;font-size:11.5px;color:var(--text);z-index:999;pointer-events:none;opacity:0;transition:opacity 0.2s;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.4);}
+.toast.err{border-color:rgba(248,113,113,0.3);}
+.toast.show{opacity:1;}
+
+/* Refresh btn */
+.refresh-btn{position:fixed;bottom:20px;right:16px;width:44px;height:44px;border-radius:50%;border:1px solid var(--border-bright);background:var(--surface);color:var(--muted);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.4);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <svg class="header-logo" viewBox="0 0 340 171.37" xmlns="http://www.w3.org/2000/svg">
+    <g fill="#fff">
+      <path d="M99.01,63.14v42.64c0,3.69-1.23,6.97-4.1,9.84l-12.3,12.3c-2.87,2.87-5.95,4.1-9.84,4.1h-27.26c-5.13,0-6.97-1.23-11.48-5.94l-8.4-9.43v54.73H0V37.72h25.62v14.55l8.4-9.43c4.3-4.51,6.35-5.94,11.48-5.94h27.26c3.48,0,6.97,1.23,9.84,4.1l12.3,12.3c2.87,2.87,4.1,5.94,4.1,9.84ZM73.39,59.86H25.62v49.2h47.76v-49.2Z"/>
+      <path d="M108.58,0h25.62v132.01h-25.62V0Z"/>
+      <path d="M142.59,0h25.62v24.6h-25.62V0ZM142.59,36.9h25.62v95.11h-25.62V36.9Z"/>
+      <path d="M273.76,36.9v95.11h-25.62v-15.37l-8.4,9.43c-4.51,4.71-6.35,5.94-11.48,5.94h-25.01c-3.89,0-6.97-1.23-9.84-4.1l-12.3-12.3c-2.87-2.87-4.1-6.15-4.1-9.84V36.9h25.62v72.16h45.51V36.9h25.62Z"/>
+      <path d="M281.85,109.26h55.96v-15.99h-36.08c-2.46,0-6.15-1.23-8.4-3.69l-7.58-8.2c-2.46-2.46-3.69-4.72-3.69-8.2v-18.86c0-2.25,1.84-3.9,3.69-5.74l7.79-7.79c2.05-2.05,5.13-3.9,8.4-3.9h58.22v22.14h-53.91v13.73h35.87c3.48,0,5.74,1.23,8.2,3.69l7.99,7.99c1.85,1.85,3.69,3.49,3.69,5.74v21.73c0,2.05-.82,5.12-3.9,7.99l-7.99,7.79c-1.64,1.64-4.71,3.69-7.99,3.69h-60.27v-22.14Z"/>
+    </g>
+  </svg>
+  <span class="header-title">Gestão</span>
+  <div class="sync-indicator" id="syncDot"></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" id="tab-tarefas" onclick="switchTab('tarefas')">Tarefas</div>
+  <div class="tab" id="tab-financeiro" onclick="switchTab('financeiro')">Financeiro</div>
+</div>
+
+<div class="content" id="content-tarefas">
+  <!-- AI Box -->
+  <div class="ai-box">
+    <div class="ai-row">
+      <textarea class="ai-input" id="aiInput" placeholder="Digite ou grave um áudio — a IA cria a tarefa automaticamente..." onkeydown="handleKey(event)"></textarea>
+      <div class="ai-btns">
+        <button class="btn-mic" id="micBtn" onclick="toggleRecording()" title="Gravar áudio">🎙</button>
+        <button class="btn-send" id="sendBtn" onclick="sendText()">+</button>
+      </div>
+    </div>
+    <div class="transcricao" id="transcricao"></div>
+    <div class="ai-hint">Enter envia • 🎙 grava áudio • A IA entende texto livre e adiciona ao financeiro automaticamente</div>
+  </div>
+
+  <div class="filter-row">
+    <button class="fbtn active" id="f-todas" onclick="setFilter('todas')">Todas</button>
+    <button class="fbtn" id="f-urgente" onclick="setFilter('urgente')">🔴 Urgente</button>
+    <button class="fbtn" id="f-importante" onclick="setFilter('importante')">🔵 Importante</button>
+    <button class="fbtn" id="f-pendentes" onclick="setFilter('pendentes')">Pendentes</button>
+  </div>
+
+  <div id="taskList"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
+</div>
+
+<div class="content" id="content-financeiro" style="display:none">
+  <div class="fin-summary" id="finSummary"></div>
+  <div id="finList"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
+</div>
+
+<button class="refresh-btn" onclick="loadAll()" title="Atualizar">↻</button>
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';  // same origin
+let tarefas = [];
+let financeiro = [];
+let activeTab = 'tarefas';
+let activeFilter = 'todas';
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+let pollInterval = null;
+
+// ── Init ──────────────────────────────────────────────────────────
+async function init() {
+  await loadAll();
+  // Poll every 30s for sync
+  pollInterval = setInterval(loadAll, 30000);
+}
+
+async function loadAll() {
+  setSyncing(true);
+  try {
+    const [t, f] = await Promise.all([
+      fetch(API+'/api/tarefas').then(r=>r.json()),
+      fetch(API+'/api/financeiro').then(r=>r.json())
+    ]);
+    tarefas = Array.isArray(t) ? t : [];
+    financeiro = Array.isArray(f) ? f : [];
+    renderActive();
+    setSyncing(false);
+  } catch(e) {
+    setSyncing(false, true);
+    showToast('Erro ao carregar dados', true);
+  }
+}
+
+function setSyncing(v, err=false) {
+  const d = document.getElementById('syncDot');
+  d.className = 'sync-indicator' + (v?' syncing':err?' error':'');
+}
+
+// ── Navigation ────────────────────────────────────────────────────
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('content-tarefas').style.display = tab==='tarefas'?'block':'none';
+  document.getElementById('content-financeiro').style.display = tab==='financeiro'?'block':'none';
+  if(tab==='financeiro') renderFinanceiro();
+}
+
+function renderActive() {
+  if(activeTab==='tarefas') renderTarefas();
+  else renderFinanceiro();
+}
+
+function setFilter(f) {
+  activeFilter = f;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('f-'+f).classList.add('active');
+  renderTarefas();
+}
+
+// ── Tasks ─────────────────────────────────────────────────────────
+function renderTarefas() {
+  let list = tarefas;
+  if(activeFilter==='urgente') list=list.filter(t=>t.urgente==='true');
+  else if(activeFilter==='importante') list=list.filter(t=>t.importante==='true');
+  else if(activeFilter==='pendentes') list=list.filter(t=>t.feito!=='true');
+
+  const el = document.getElementById('taskList');
+  if(!list.length){ el.innerHTML=`<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Nenhuma tarefa.<br>Digite ou grave um áudio acima.</div></div>`; return; }
+
+  el.innerHTML = list.map(t => {
+    let subs = [];
+    try { subs = JSON.parse(t.subtarefas||'[]'); } catch(e){}
+    return `
+    <div class="task-card ${t.feito==='true'?'done':''}" id="tc-${t.id}">
+      <div class="task-row">
+        <div class="tcheck ${t.feito==='true'?'checked':''}" onclick="toggleTask('${t.id}')"></div>
+        <div class="task-body">
+          <div class="task-text">${esc(t.texto)}</div>
+          <div class="task-meta">
+            ${t.urgente==='true'?'<span class="ttag urgente">⚡ urgente</span>':''}
+            ${t.importante==='true'?'<span class="ttag importante">🔵 importante</span>':''}
+            ${t.tag?`<span class="ttag custom">${esc(t.tag)}</span>`:''}
+            <span class="tdate">${t.criadoEm||''}</span>
+          </div>
+          ${subs.length?`<div class="subtasks">${subs.map((s,i)=>`<div class="subi"><div class="subi-check"></div><span class="subi-text">${esc(s)}</span></div>`).join('')}</div>`:''}
+        </div>
+        <button class="task-del" onclick="deleteTask('${t.id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function toggleTask(id) {
+  const t = tarefas.find(t=>t.id===id); if(!t) return;
+  t.feito = t.feito==='true'?'false':'true';
+  t.concluidoEm = t.feito==='true'?new Date().toLocaleDateString('pt-BR'):'';
+  renderTarefas();
+  try {
+    await fetch(API+`/api/tarefas/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({feito:t.feito, concluidoEm:t.concluidoEm}) });
+  } catch(e) { showToast('Erro ao salvar', true); }
+}
+
+async function deleteTask(id) {
+  tarefas = tarefas.filter(t=>t.id!==id);
+  renderTarefas();
+  try { await fetch(API+`/api/tarefas/${id}`, {method:'DELETE'}); }
+  catch(e){}
+}
+
+// ── AI Text ───────────────────────────────────────────────────────
+function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendText();} }
+
+async function sendText() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim(); if(!text) return;
+  const btn = document.getElementById('sendBtn');
+  btn.disabled=true; btn.textContent='…';
+  try {
+    const r = await fetch(API+'/api/parse-text', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({text})
+    }).then(r=>r.json());
+    if(r.ok) {
+      tarefas.push(r.task);
+      if(r.finEntry) financeiro.push(r.finEntry);
+      input.value='';
+      renderTarefas();
+      const msg = r.finEntry ? 'Tarefa + financeiro criados ✓' : 'Tarefa criada ✓';
+      showToast(msg);
+      setTimeout(()=>document.getElementById('taskList').scrollIntoView({behavior:'smooth'}),100);
+    } else { showToast('Erro: '+(r.error||'desconhecido'), true); }
+  } catch(e){ showToast('Erro de conexão', true); }
+  btn.disabled=false; btn.textContent='+';
+}
+
+// ── Audio Recording ───────────────────────────────────────────────
+async function toggleRecording() {
+  if(isRecording) { stopRecording(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    audioChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = sendAudio;
+    mediaRecorder.start();
+    isRecording = true;
+    document.getElementById('micBtn').classList.add('recording');
+    document.getElementById('micBtn').textContent = '⏹';
+    showToast('Gravando...');
+  } catch(e){ showToast('Sem permissão para microfone', true); }
+}
+
+function stopRecording() {
+  if(mediaRecorder&&isRecording) { mediaRecorder.stop(); mediaRecorder.stream.getTracks().forEach(t=>t.stop()); }
+  isRecording=false;
+  document.getElementById('micBtn').classList.remove('recording');
+  document.getElementById('micBtn').textContent='🎙';
+}
+
+async function sendAudio() {
+  showToast('Interpretando áudio...');
+  const btn = document.getElementById('sendBtn');
+  btn.disabled=true;
+  try {
+    const blob = new Blob(audioChunks, {type:'audio/webm'});
+    const form = new FormData();
+    form.append('audio', blob, 'audio.webm');
+    const r = await fetch(API+'/api/parse-audio', {method:'POST', body:form}).then(r=>r.json());
+    if(r.ok) {
+      if(r.transcricao) {
+        const tr = document.getElementById('transcricao');
+        tr.textContent = '🎙 "'+r.transcricao+'"';
+        tr.classList.add('show');
+        setTimeout(()=>tr.classList.remove('show'), 5000);
+      }
+      tarefas.push(r.task);
+      if(r.finEntry) financeiro.push(r.finEntry);
+      renderTarefas();
+      showToast(r.finEntry?'Tarefa + financeiro criados ✓':'Tarefa criada ✓');
+    } else { showToast('Erro: '+(r.error||'desconhecido'), true); }
+  } catch(e){ showToast('Erro ao enviar áudio', true); }
+  btn.disabled=false;
+}
+
+// ── Financeiro ────────────────────────────────────────────────────
+function renderFinanceiro() {
+  const now = new Date();
+  const thisMon = financeiro.filter(f=>{
+    if(!f.vencimento) return true;
+    const [,m,y]=f.vencimento.split('/').map(Number);
+    return m===now.getMonth()+1&&y===now.getFullYear();
+  });
+  const total=thisMon.reduce((s,f)=>s+(Number(f.valor)||0),0);
+  const recebido=thisMon.filter(f=>f.status==='pago').reduce((s,f)=>s+(Number(f.valor)||0),0);
+  const pendente=total-recebido;
+
+  document.getElementById('finSummary').innerHTML=`
+    <div class="fkpi"><div class="fkpi-lbl">Total Mês</div><div class="fkpi-val green">R$${fmtK(total)}</div></div>
+    <div class="fkpi"><div class="fkpi-lbl">Recebido</div><div class="fkpi-val blue">R$${fmtK(recebido)}</div></div>
+    <div class="fkpi"><div class="fkpi-lbl">Pendente</div><div class="fkpi-val orange">R$${fmtK(pendente)}</div></div>`;
+
+  const el=document.getElementById('finList');
+  if(!financeiro.length){ el.innerHTML=`<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">Sem entradas financeiras ainda.</div></div>`; return; }
+
+  el.innerHTML=financeiro.map(f=>{
+    const late=f.status==='pendente'&&isDatePast(f.vencimento);
+    return `<div class="fin-card">
+      <div class="fcheck ${f.status==='pago'?'checked':''}" onclick="togglePago('${f.id}')"></div>
+      <div class="fin-info"><div class="fin-cliente">${esc(f.cliente||'')}</div><div class="fin-desc">${esc(f.descricao||'')}</div></div>
+      <div class="fin-right">
+        <div class="fin-val">R$ ${fmtR(f.valor)}</div>
+        <div class="fin-date">${f.vencimento||''}</div>
+        <span class="fbadge ${late?'atrasado':f.status}">${late?'atrasado':f.status}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function togglePago(id) {
+  const f=financeiro.find(f=>f.id===id); if(!f) return;
+  f.status=f.status==='pago'?'pendente':'pago';
+  renderFinanceiro();
+  try { await fetch(API+`/api/financeiro/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:f.status})}); showToast(f.status==='pago'?'Marcado como pago ✓':'Desmarcado'); }
+  catch(e){ showToast('Erro ao salvar',true); }
+}
+
+// ── Utils ─────────────────────────────────────────────────────────
+function isDatePast(s){ if(!s) return false; const[d,m,y]=s.split('/').map(Number); return new Date(y,m-1,d)<new Date(); }
+function fmtR(v){ return Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2}); }
+function fmtK(v){ return v>=1000?(v/1000).toFixed(1)+'k':String(Math.round(v||0)); }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function showToast(msg,isErr=false){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast'+(isErr?' err':''); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+
+init();
+</script>
+</body>
+</html>
