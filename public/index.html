@@ -240,6 +240,7 @@ let activeFilter = 'todas';
 let editingId = null;
 let recognition = null;
 let isListening = false;
+let deletedIds = new Set(); // track locally deleted IDs
 
 // ── Init ──────────────────────────────────────────────────────────
 async function init() {
@@ -255,7 +256,8 @@ async function loadAll() {
       fetch('/api/tarefas').then(r=>r.json()),
       fetch('/api/financeiro').then(r=>r.json())
     ]);
-    tarefas = Array.isArray(t) ? t : [];
+    // Filter out locally deleted items (in case Sheets hasn't updated yet)
+    tarefas = (Array.isArray(t) ? t : []).filter(t => !deletedIds.has(t.id));
     financeiro = Array.isArray(f) ? f : [];
     if (activeTab === 'tarefas') renderTarefas();
     else renderFinanceiro();
@@ -351,6 +353,36 @@ async function sendText() {
   const btn = document.getElementById('sendBtn');
   btn.disabled = true; btn.textContent = '…';
   setStatus('Interpretando...', 'thinking');
+
+  // Detect voice command: "valor do serviço X reais" or "valor X" after last task
+  const valorMatch = text.match(/valor\s+(do\s+servi[cç]o\s+)?(R\$\s?)?(\d[\d.,]*)/i);
+  if (valorMatch && tarefas.length > 0) {
+    const valor = parseFloat(valorMatch[3].replace(/\./g,'').replace(',','.'));
+    const lastTask = tarefas[tarefas.length - 1];
+    // Add financial entry linked to last task
+    const finEntry = {
+      id: Date.now().toString() + '_fin',
+      cliente: 'Cliente Avulso',
+      descricao: lastTask.texto,
+      valor,
+      vencimento: '',
+      status: 'pendente',
+      tipo: 'pontual',
+      servicoId: lastTask.id
+    };
+    financeiro.push(finEntry);
+    input.value = '';
+    setStatus('', '');
+    btn.disabled = false; btn.textContent = '+';
+    try {
+      const fin = await fetch('/api/financeiro').then(r=>r.json());
+      fin.push(finEntry);
+      await fetch('/api/financeiro', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(fin)});
+    } catch(e){}
+    showToast('Valor R$' + valor.toLocaleString('pt-BR',{minimumFractionDigits:2}) + ' adicionado ao financeiro ✓');
+    return;
+  }
+
   try {
     const r = await fetch('/api/parse-text', {
       method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({text})
@@ -361,7 +393,11 @@ async function sendText() {
       input.value = '';
       setStatus('', '');
       renderTarefas();
-      showToast(r.finEntry ? 'Tarefa + financeiro criados ✓' : 'Tarefa criada ✓');
+      let msg = 'Tarefa criada ✓';
+      if (r.task.urgente === 'true') msg += ' 🔴';
+      if (r.task.importante === 'true') msg += ' 🔵';
+      if (r.finEntry) msg += ' + financeiro';
+      showToast(msg);
     } else {
       setStatus('', '');
       showToast('Erro: ' + (r.error || 'desconhecido'), true);
@@ -496,10 +532,17 @@ async function toggleTask(id) {
 }
 
 async function deleteTask(id) {
+  deletedIds.add(id); // prevent reload from bringing it back
   tarefas = tarefas.filter(t=>t.id!==id);
   renderTarefas();
-  try { await fetch('/api/tarefas/'+id, {method:'DELETE'}); }
-  catch(e){}
+  try {
+    const r = await fetch('/api/tarefas/'+id, {method:'DELETE'}).then(r=>r.json());
+    if (r.ok) {
+      // Confirmed deleted on server - can remove from local set after a while
+      setTimeout(() => deletedIds.delete(id), 60000);
+    }
+  } catch(e) {}
+  showToast('Tarefa removida');
 }
 
 // ── Edit modal ────────────────────────────────────────────────────
