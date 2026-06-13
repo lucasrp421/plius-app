@@ -113,42 +113,44 @@ function geminiRequest(parts) {
 // ── Build prompts ─────────────────────────────────────────────────
 function buildTextPrompt(text) {
   const now = new Date();
-  const dia = now.getDate();
   const mes = now.getMonth() + 1;
   const ano = now.getFullYear();
   const mesStr = mes < 10 ? '0' + mes : String(mes);
-  const diaStr = dia < 10 ? '0' + dia : String(dia);
 
-  return 'Voce e assistente de uma agencia de marketing. Analise o texto e retorne APENAS JSON valido, sem markdown, sem explicacoes, sem aspas extras.\n\n' +
+  return 'Voce e assistente de uma agencia de marketing. Analise o texto e retorne APENAS JSON valido, sem markdown, sem explicacoes.\n\n' +
     'Texto: "' + text + '"\n\n' +
-    'Retorne exatamente este JSON (substitua os valores):\n' +
-    '{"texto":"descricao clara da tarefa","urgente":false,"importante":false,"tag":null,"temFinanceiro":false,"cliente":"Cliente Avulso","valor":0,"vencimento":null,"tipo":"pontual","checklist":[]}\n\n' +
-    'Regras:\n' +
-    '- temFinanceiro: true se mencionar qualquer valor monetario, R$, reais, pagamento, vencimento ou nome de cliente\n' +
-    '- cliente: nome do cliente mencionado. Se nao houver, use "Cliente Avulso"\n' +
-    '- valor: apenas o numero. R$1000=1000, 90 reais=90\n' +
-    '- vencimento: formato DD/MM/AAAA. "dia 15" = 15/' + mesStr + '/' + ano + '\n' +
-    '- tipo: mensal se mencionar mensal ou recorrente, senao pontual\n' +
-    '- texto: descricao clara do que precisa ser feito\n' +
-    '- checklist: liste cada servico separado se houver multiplos, senao deixe vazio';
+    'Retorne este JSON:\n' +
+    '{"texto":"descricao da tarefa","urgente":false,"importante":false,"tag":null,"temFinanceiro":false,"cliente":"Cliente Avulso","valor":0,"vencimento":null,"tipo":"pontual","checklist":[]}\n\n' +
+    'Regras OBRIGATORIAS:\n' +
+    '- urgente: true se o texto contem "urgente", "urgencia", "urgent", "rapido", "ja", "agora" ou similar\n' +
+    '- importante: true se o texto contem "importante", "important", "prioridade", "priority" ou similar\n' +
+    '- temFinanceiro: true se contem valor em dinheiro (R$, reais, valor, pagamento, vencimento, cobrar, receber) OU nome de cliente com contexto financeiro\n' +
+    '- valor: extraia APENAS o numero. "R$1000"=1000, "mil reais"=1000, "90 reais"=90, "1.500"=1500\n' +
+    '- cliente: nome do cliente. Se nao houver, use "Cliente Avulso"\n' +
+    '- vencimento: DD/MM/AAAA. "dia 15" ou "todo dia 15" = 15/' + mesStr + '/' + ano + '. "proximo mes" = mes seguinte\n' +
+    '- tipo: "mensal" se mencionar mensal, todo mes, recorrente, mensalidade. Senao "pontual"\n' +
+    '- texto: descricao objetiva da tarefa sem mencionar urgencia ou valor (esses vao nos outros campos)\n' +
+    '- checklist: array de strings com cada servico/entrega separado. Se for uma tarefa simples, deixe vazio []';
 }
 
-function buildAudioPrompt(text) {
+function buildAudioPrompt() {
   const now = new Date();
   const mes = now.getMonth() + 1;
   const ano = now.getFullYear();
   const mesStr = mes < 10 ? '0' + mes : String(mes);
 
-  return 'Transcreva o audio e interprete como tarefa de agencia de marketing. Retorne APENAS JSON valido sem markdown.\n\n' +
-    '{"transcricao":"texto exato do audio","texto":"descricao clara da tarefa","urgente":false,"importante":false,"tag":null,"temFinanceiro":false,"cliente":"Cliente Avulso","valor":0,"vencimento":null,"tipo":"pontual","checklist":[]}\n\n' +
-    'Regras:\n' +
-    '- transcricao: exatamente o que foi dito\n' +
-    '- texto: descricao clara da tarefa (NUNCA use "Tarefa de audio")\n' +
-    '- temFinanceiro: true se mencionar valor, R$, pagamento, cliente\n' +
-    '- cliente: nome do cliente ou "Cliente Avulso"\n' +
-    '- valor: apenas o numero\n' +
-    '- vencimento: DD/MM/AAAA ou null. "dia 15" = 15/' + mesStr + '/' + ano + '\n' +
-    '- tipo: mensal se recorrente, senao pontual';
+  return 'Interprete o texto transcrito como uma tarefa de agencia de marketing. Retorne APENAS JSON valido sem markdown.\n\n' +
+    '{"transcricao":"texto original","texto":"descricao da tarefa","urgente":false,"importante":false,"tag":null,"temFinanceiro":false,"cliente":"Cliente Avulso","valor":0,"vencimento":null,"tipo":"pontual","checklist":[]}\n\n' +
+    'Regras OBRIGATORIAS:\n' +
+    '- transcricao: texto exato recebido\n' +
+    '- texto: descricao clara da tarefa. NUNCA use "Tarefa de audio" ou similar. Use o conteudo real\n' +
+    '- urgente: true se contem "urgente", "urgencia", "rapido", "ja", "agora" ou similar\n' +
+    '- importante: true se contem "importante", "prioridade" ou similar\n' +
+    '- temFinanceiro: true se contem valor, R$, reais, pagamento, cobrar, receber, cliente com valor\n' +
+    '- valor: apenas o numero. "mil reais"=1000, "R$500"=500\n' +
+    '- cliente: nome mencionado ou "Cliente Avulso"\n' +
+    '- vencimento: DD/MM/AAAA ou null. "dia 15"=15/' + mesStr + '/' + ano + '\n' +
+    '- tipo: "mensal" se recorrente, senao "pontual"';
 }
 
 // ── Routes ────────────────────────────────────────────────────────
