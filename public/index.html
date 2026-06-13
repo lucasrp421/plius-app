@@ -9,105 +9,145 @@
 <title>Plius</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap');
-:root {
-  --bg: #0a0b0e;
-  --surface: #13151c;
-  --surface2: #1a1d27;
-  --border: rgba(255,255,255,0.08);
-  --border-bright: rgba(255,255,255,0.14);
-  --accent: #22d3a5;
-  --accent-dim: rgba(34,211,165,0.12);
-  --blue: #818cf8;
-  --orange: #fb923c;
-  --danger: #f87171;
-  --text: #e8eaf0;
-  --muted: rgba(232,234,240,0.5);
-  --dim: rgba(232,234,240,0.25);
+:root{
+  --bg:#0a0b0e;--surface:#13151c;--surface2:#1a1d27;--surface3:#20232f;
+  --border:rgba(255,255,255,0.08);--border-bright:rgba(255,255,255,0.14);
+  --accent:#22d3a5;--accent-dim:rgba(34,211,165,0.12);
+  --blue:#818cf8;--orange:#fb923c;--danger:#f87171;
+  --text:#e8eaf0;--muted:rgba(232,234,240,0.5);--dim:rgba(232,234,240,0.22);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;}
 
-/* Header */
-.header{background:var(--surface);padding:14px 16px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-.header-logo{height:18px;width:auto;opacity:0.9;}
-.header-title{font-size:11px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);flex:1;}
-.sync-indicator{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;transition:all 0.3s;}
-.sync-indicator.syncing{background:var(--orange);animation:blink 0.8s infinite;}
-.sync-indicator.error{background:var(--danger);}
+.header{background:var(--surface);padding:13px 16px 11px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.header-logo{height:17px;width:auto;opacity:0.9;}
+.header-title{font-size:10.5px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);flex:1;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;transition:all 0.3s;}
+.sync-dot.syncing{background:var(--orange);animation:blink 0.8s infinite;}
+.sync-dot.err{background:var(--danger);}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;};}
 
-/* Tabs */
-.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:99;}
-.tab{flex:1;padding:11px 0;font-size:10.5px;font-weight:600;letter-spacing:0.04em;color:var(--muted);text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:54px;z-index:99;}
+.tab{flex:1;padding:10px 0;font-size:10.5px;font-weight:600;letter-spacing:0.04em;color:var(--muted);text-align:center;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
 
-/* Content */
-.content{flex:1;overflow-y:auto;padding:12px;}
+.content{flex:1;padding:12px;overflow-y:auto;}
 
-/* AI Input area */
-.ai-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:14px;}
+/* AI Box */
+.ai-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:12px;}
 .ai-row{display:flex;gap:8px;align-items:flex-end;}
-.ai-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Sora',sans-serif;font-size:13px;padding:10px 12px;resize:none;outline:none;min-height:42px;max-height:100px;line-height:1.5;field-sizing:content;}
-.ai-input:focus{border-color:rgba(34,211,165,0.35);}
+.ai-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Sora',sans-serif;font-size:13px;padding:10px 12px;resize:none;outline:none;min-height:42px;max-height:120px;line-height:1.5;field-sizing:content;transition:border-color 0.15s;}
+.ai-input:focus{border-color:rgba(34,211,165,0.3);}
 .ai-input::placeholder{color:var(--dim);}
-.ai-btns{display:flex;gap:6px;flex-shrink:0;}
-.btn-send{width:42px;height:42px;border-radius:11px;border:none;background:var(--accent);color:#0a0b0e;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;transition:all 0.15s;flex-shrink:0;}
-.btn-send:active{transform:scale(0.95);}
+.ai-input.listening{border-color:rgba(248,113,113,0.4);background:rgba(248,113,113,0.04);}
+.ai-btns{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+.btn-send{width:42px;height:42px;border-radius:11px;border:none;background:var(--accent);color:#0a0b0e;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;transition:all 0.15s;}
+.btn-send:active{transform:scale(0.93);}
 .btn-send:disabled{opacity:0.4;}
-.btn-mic{width:42px;height:42px;border-radius:11px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.15s;flex-shrink:0;}
-.btn-mic.recording{background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.4);color:var(--danger);animation:pulse-red 1s infinite;}
-@keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0.3);}50%{box-shadow:0 0 0 6px rgba(248,113,113,0);}}
-.ai-hint{font-size:10px;color:var(--dim);margin-top:7px;line-height:1.5;}
-.transcricao{font-size:10.5px;color:var(--muted);background:var(--surface2);border-radius:7px;padding:6px 9px;margin-top:7px;display:none;}
-.transcricao.show{display:block;}
+.btn-mic{width:42px;height:42px;border-radius:11px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all 0.15s;}
+.btn-mic.active{background:rgba(248,113,113,0.12);border-color:rgba(248,113,113,0.35);color:var(--danger);animation:pulse-r 1.2s infinite;}
+@keyframes pulse-r{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0.25);}50%{box-shadow:0 0 0 7px rgba(248,113,113,0);}}
+.ai-status{font-size:9.5px;margin-top:6px;display:flex;align-items:center;gap:5px;min-height:16px;}
+.ai-status.listening{color:var(--danger);}
+.ai-status.thinking{color:var(--orange);}
+.ai-status.ok{color:var(--accent);}
+.ai-hint{font-size:9px;color:var(--dim);margin-top:4px;}
 
-/* Filter */
-.filter-row{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
+/* Filters */
+.filters{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
 .fbtn{padding:4px 10px;border-radius:7px;border:1px solid transparent;background:transparent;color:var(--dim);font-family:'Sora',sans-serif;font-size:10px;font-weight:600;cursor:pointer;transition:all 0.12s;}
 .fbtn.active{background:var(--surface);border-color:var(--border-bright);color:var(--muted);}
 
 /* Task card */
-.task-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 13px;margin-bottom:8px;transition:border-color 0.15s;}
-.task-card:active{border-color:var(--border-bright);}
-.task-row{display:flex;align-items:flex-start;gap:10px;}
-.tcheck{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border-bright);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;margin-top:1px;}
+.task-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;transition:border-color 0.15s;}
+.task-card.done{opacity:0.55;}
+.task-main{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;}
+.tcheck{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border-bright);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.18s;margin-top:1px;}
 .tcheck.checked{background:var(--accent);border-color:var(--accent);}
 .tcheck.checked::after{content:'✓';color:#0a0b0e;font-size:12px;font-weight:700;}
 .task-body{flex:1;min-width:0;}
 .task-text{font-size:13px;line-height:1.5;color:var(--text);word-break:break-word;}
 .task-card.done .task-text{text-decoration:line-through;color:var(--muted);}
-.task-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;align-items:center;}
+.task-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;align-items:center;}
 .ttag{padding:2px 6px;border-radius:4px;font-size:9px;font-weight:600;}
 .ttag.urgente{background:rgba(248,113,113,0.1);color:var(--danger);}
 .ttag.importante{background:rgba(129,140,248,0.12);color:var(--blue);}
 .ttag.custom{background:var(--accent-dim);color:var(--accent);}
 .tdate{font-size:9px;color:var(--dim);}
-.task-del{width:28px;height:28px;border-radius:7px;border:none;background:transparent;color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:all 0.1s;}
-.task-del:active{color:var(--danger);background:rgba(248,113,113,0.1);}
+.task-actions{display:flex;gap:3px;flex-shrink:0;}
+.tact{width:28px;height:28px;border-radius:7px;border:none;background:transparent;color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.1s;}
+.tact:active{background:var(--surface2);}
+.tact.del:active{color:var(--danger);}
+.tact.edit:active{color:var(--accent);}
 
 /* Subtasks */
-.subtasks{margin-top:8px;padding-left:30px;display:flex;flex-direction:column;gap:3px;}
-.subi{display:flex;align-items:center;gap:7px;}
-.subi-check{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border-bright);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.subi-check.checked{background:var(--accent);border-color:var(--accent);}
-.subi-check.checked::after{content:'✓';color:#0a0b0e;font-size:8px;font-weight:700;}
-.subi-text{font-size:11px;color:var(--muted);}
+.subtasks-wrap{padding:0 12px 10px 42px;display:flex;flex-direction:column;gap:3px;}
+.sub-item{display:flex;align-items:flex-start;gap:7px;padding:3px 0;}
+.sub-check{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--border-bright);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;margin-top:2px;}
+.sub-check.checked{background:var(--accent);border-color:var(--accent);}
+.sub-check.checked::after{content:'✓';color:#0a0b0e;font-size:8px;font-weight:700;}
+.sub-body{flex:1;min-width:0;}
+.sub-text{font-size:11.5px;color:var(--muted);line-height:1.45;word-break:break-word;}
+.sub-item.done .sub-text{text-decoration:line-through;color:var(--dim);}
+.sub-del{width:18px;height:18px;border-radius:4px;border:none;background:transparent;color:var(--dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;transition:all 0.1s;}
+.sub-del:active{color:var(--danger);}
 
-/* Fin card */
+/* Sub-subtasks */
+.subsub-wrap{padding-left:21px;margin-top:3px;display:flex;flex-direction:column;gap:2px;}
+.subsub-item{display:flex;align-items:flex-start;gap:6px;padding:2px 0;}
+.subsub-check{width:12px;height:12px;border-radius:2px;border:1.5px solid var(--border-bright);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;margin-top:2px;}
+.subsub-check.checked{background:var(--blue);border-color:var(--blue);}
+.subsub-check.checked::after{content:'✓';color:#fff;font-size:7px;font-weight:700;}
+.subsub-text{font-size:10.5px;color:var(--dim);flex:1;word-break:break-word;}
+.subsub-item.done .subsub-text{text-decoration:line-through;}
+.subsub-del{width:16px;height:16px;border-radius:3px;border:none;background:transparent;color:var(--dim);cursor:pointer;font-size:9px;flex-shrink:0;}
+
+/* Add sub input */
+.add-sub-row{display:flex;gap:6px;align-items:center;margin-top:4px;}
+.add-sub-input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--muted);font-family:'Sora',sans-serif;font-size:11px;padding:3px 4px;outline:none;transition:border-color 0.15s;}
+.add-sub-input:focus{border-bottom-color:rgba(34,211,165,0.3);}
+.add-sub-input::placeholder{color:var(--dim);}
+.add-sub-btn{width:20px;height:20px;border-radius:5px;border:none;background:var(--accent-dim);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;transition:all 0.12s;}
+.add-sub-btn:active{background:var(--accent);color:#0a0b0e;}
+
+.add-subsub-row{display:flex;gap:5px;align-items:center;margin-top:2px;padding-left:21px;}
+.add-subsub-input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--dim);font-family:'Sora',sans-serif;font-size:10px;padding:2px 3px;outline:none;}
+.add-subsub-input:focus{border-bottom-color:rgba(129,140,248,0.3);}
+.add-subsub-input::placeholder{color:var(--dim);}
+.add-subsub-btn{width:17px;height:17px;border-radius:4px;border:none;background:rgba(129,140,248,0.1);color:var(--blue);cursor:pointer;font-size:12px;font-weight:700;flex-shrink:0;}
+
+/* Progress bar */
+.task-prog{height:2px;background:var(--border);margin:0 12px 8px;}
+.task-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),#6ee7b7);border-radius:1px;transition:width 0.3s;}
+
+/* Edit modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.modal-overlay.show{opacity:1;pointer-events:all;}
+.modal{background:var(--surface);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:20px 16px 32px;transform:translateY(100%);transition:transform 0.25s ease;}
+.modal-overlay.show .modal{transform:translateY(0);}
+.modal-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;}
+.modal-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Sora',sans-serif;font-size:13px;padding:10px 12px;resize:none;outline:none;min-height:60px;line-height:1.5;margin-bottom:10px;}
+.modal-input:focus{border-color:rgba(34,211,165,0.3);}
+.modal-row{display:flex;gap:8px;}
+.modal-btn{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Sora',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.modal-btn.primary{background:var(--accent);border-color:var(--accent);color:#0a0b0e;}
+.modal-btn:active{transform:scale(0.97);}
+
+/* Fin */
 .fin-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px;}
 .fkpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 11px;}
 .fkpi-lbl{font-size:8.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim);}
-.fkpi-val{font-size:16px;font-weight:700;margin-top:3px;}
+.fkpi-val{font-size:15px;font-weight:700;margin-top:3px;}
 .fkpi-val.green{color:var(--accent);}
 .fkpi-val.blue{color:var(--blue);}
 .fkpi-val.orange{color:var(--orange);}
 .fin-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;gap:10px;}
-.fcheck{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border-bright);background:transparent;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;}
+.fcheck{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border-bright);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;}
 .fcheck.checked{background:var(--accent);border-color:var(--accent);}
 .fcheck.checked::after{content:'✓';color:#0a0b0e;font-size:13px;font-weight:700;}
 .fin-info{flex:1;min-width:0;}
 .fin-cliente{font-size:12.5px;font-weight:600;}
-.fin-desc{font-size:10px;color:var(--muted);margin-top:1px;}
+.fin-desc{font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .fin-right{text-align:right;flex-shrink:0;}
 .fin-val{font-size:14px;font-weight:700;color:var(--accent);}
 .fin-date{font-size:9px;color:var(--dim);}
@@ -116,23 +156,15 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 .fbadge.pendente{background:rgba(251,146,60,0.1);color:var(--orange);}
 .fbadge.atrasado{background:rgba(248,113,113,0.15);color:var(--danger);}
 
-/* Empty */
 .empty{text-align:center;padding:40px 20px;color:var(--dim);}
-.empty-icon{font-size:32px;margin-bottom:10px;opacity:0.4;}
-.empty-text{font-size:12px;line-height:1.7;}
+.empty-icon{font-size:30px;margin-bottom:8px;opacity:0.35;}
+.empty-text{font-size:11.5px;line-height:1.7;}
 
-/* Loading */
-.loading{text-align:center;padding:30px;color:var(--muted);font-size:12px;}
-.spinner{width:20px;height:20px;border:2px solid var(--border-bright);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 10px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-
-/* Toast */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid rgba(34,211,165,0.3);border-radius:10px;padding:9px 18px;font-size:11.5px;color:var(--text);z-index:999;pointer-events:none;opacity:0;transition:opacity 0.2s;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.4);}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid rgba(34,211,165,0.3);border-radius:10px;padding:8px 18px;font-size:11.5px;color:var(--text);z-index:300;pointer-events:none;opacity:0;transition:opacity 0.2s;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.4);}
 .toast.err{border-color:rgba(248,113,113,0.3);}
 .toast.show{opacity:1;}
 
-/* Refresh btn */
-.refresh-btn{position:fixed;bottom:20px;right:16px;width:44px;height:44px;border-radius:50%;border:1px solid var(--border-bright);background:var(--surface);color:var(--muted);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.4);}
+.fab{position:fixed;bottom:20px;right:16px;width:42px;height:42px;border-radius:50%;border:1px solid var(--border-bright);background:var(--surface);color:var(--muted);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.4);z-index:50;}
 </style>
 </head>
 <body>
@@ -148,7 +180,7 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
     </g>
   </svg>
   <span class="header-title">Gestão</span>
-  <div class="sync-indicator" id="syncDot"></div>
+  <div class="sync-dot" id="syncDot"></div>
 </div>
 
 <div class="tabs">
@@ -157,75 +189,188 @@ body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-he
 </div>
 
 <div class="content" id="content-tarefas">
-  <!-- AI Box -->
   <div class="ai-box">
     <div class="ai-row">
-      <textarea class="ai-input" id="aiInput" placeholder="Digite ou grave um áudio — a IA cria a tarefa automaticamente..." onkeydown="handleKey(event)"></textarea>
+      <textarea class="ai-input" id="aiInput" placeholder="Digite ou fale — a IA cria a tarefa automaticamente..." onkeydown="handleKey(event)"></textarea>
       <div class="ai-btns">
-        <button class="btn-mic" id="micBtn" onclick="toggleRecording()" title="Gravar áudio">🎙</button>
         <button class="btn-send" id="sendBtn" onclick="sendText()">+</button>
+        <button class="btn-mic" id="micBtn" onclick="toggleMic()">🎙</button>
       </div>
     </div>
-    <div class="transcricao" id="transcricao"></div>
-    <div class="ai-hint">Enter envia • 🎙 grava áudio • A IA entende texto livre e adiciona ao financeiro automaticamente</div>
+    <div class="ai-status" id="aiStatus"></div>
+    <div class="ai-hint">🎙 fala e o texto aparece em tempo real • Enter envia</div>
   </div>
 
-  <div class="filter-row">
+  <div class="filters">
     <button class="fbtn active" id="f-todas" onclick="setFilter('todas')">Todas</button>
+    <button class="fbtn" id="f-pendentes" onclick="setFilter('pendentes')">Pendentes</button>
     <button class="fbtn" id="f-urgente" onclick="setFilter('urgente')">🔴 Urgente</button>
     <button class="fbtn" id="f-importante" onclick="setFilter('importante')">🔵 Importante</button>
-    <button class="fbtn" id="f-pendentes" onclick="setFilter('pendentes')">Pendentes</button>
   </div>
 
-  <div id="taskList"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
+  <div id="taskList"></div>
 </div>
 
 <div class="content" id="content-financeiro" style="display:none">
   <div class="fin-summary" id="finSummary"></div>
-  <div id="finList"><div class="loading"><div class="spinner"></div>Carregando...</div></div>
+  <div id="finList"></div>
 </div>
 
-<button class="refresh-btn" onclick="loadAll()" title="Atualizar">↻</button>
+<!-- Edit modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title">Editar tarefa</div>
+    <textarea class="modal-input" id="editInput" rows="3"></textarea>
+    <div class="modal-row">
+      <button class="modal-btn" onclick="closeModal()">Cancelar</button>
+      <button class="modal-btn primary" onclick="saveEdit()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<button class="fab" onclick="loadAll()" title="Atualizar">↻</button>
 <div class="toast" id="toast"></div>
 
 <script>
-const API = '';  // same origin
+// ── State ─────────────────────────────────────────────────────────
 let tarefas = [];
 let financeiro = [];
 let activeTab = 'tarefas';
 let activeFilter = 'todas';
-let mediaRecorder = null;
-let audioChunks = [];
-let isRecording = false;
-let pollInterval = null;
+let editingId = null;
+let recognition = null;
+let isListening = false;
 
 // ── Init ──────────────────────────────────────────────────────────
 async function init() {
+  setupSpeech();
   await loadAll();
-  // Poll every 30s for sync
-  pollInterval = setInterval(loadAll, 30000);
+  setInterval(loadAll, 30000);
 }
 
 async function loadAll() {
   setSyncing(true);
   try {
     const [t, f] = await Promise.all([
-      fetch(API+'/api/tarefas').then(r=>r.json()),
-      fetch(API+'/api/financeiro').then(r=>r.json())
+      fetch('/api/tarefas').then(r=>r.json()),
+      fetch('/api/financeiro').then(r=>r.json())
     ]);
     tarefas = Array.isArray(t) ? t : [];
     financeiro = Array.isArray(f) ? f : [];
-    renderActive();
+    if (activeTab === 'tarefas') renderTarefas();
+    else renderFinanceiro();
     setSyncing(false);
   } catch(e) {
     setSyncing(false, true);
-    showToast('Erro ao carregar dados', true);
+    showToast('Erro ao carregar', true);
   }
 }
 
 function setSyncing(v, err=false) {
   const d = document.getElementById('syncDot');
-  d.className = 'sync-indicator' + (v?' syncing':err?' error':'');
+  d.className = 'sync-dot' + (v?' syncing':err?' err':'');
+}
+
+// ── Speech Recognition (tempo real) ──────────────────────────────
+function setupSpeech() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return;
+  recognition = new SR();
+  recognition.lang = 'pt-BR';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    let final = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) final += t;
+      else interim += t;
+    }
+    const input = document.getElementById('aiInput');
+    if (final) {
+      input.value = (input.value + ' ' + final).trim();
+    }
+    // Show interim as placeholder hint
+    setStatus(interim ? ('🎙 "' + interim + '"') : '🎙 Ouvindo...', 'listening');
+  };
+
+  recognition.onerror = (e) => {
+    stopMic();
+    if (e.error !== 'no-speech') showToast('Erro no microfone: ' + e.error, true);
+  };
+
+  recognition.onend = () => {
+    if (isListening) recognition.start(); // keep alive
+  };
+}
+
+function toggleMic() {
+  if (!recognition) { showToast('Microfone não suportado neste navegador', true); return; }
+  if (isListening) stopMic();
+  else startMic();
+}
+
+function startMic() {
+  isListening = true;
+  document.getElementById('micBtn').classList.add('active');
+  document.getElementById('micBtn').textContent = '⏹';
+  document.getElementById('aiInput').classList.add('listening');
+  document.getElementById('aiInput').placeholder = 'Fale agora...';
+  setStatus('🎙 Ouvindo...', 'listening');
+  try { recognition.start(); } catch(e) {}
+}
+
+function stopMic() {
+  isListening = false;
+  try { recognition.stop(); } catch(e) {}
+  document.getElementById('micBtn').classList.remove('active');
+  document.getElementById('micBtn').textContent = '🎙';
+  document.getElementById('aiInput').classList.remove('listening');
+  document.getElementById('aiInput').placeholder = 'Digite ou fale — a IA cria a tarefa automaticamente...';
+  setStatus('', '');
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('aiStatus');
+  el.textContent = msg;
+  el.className = 'ai-status' + (type ? ' ' + type : '');
+}
+
+// ── Send text to AI ───────────────────────────────────────────────
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendText(); }
+}
+
+async function sendText() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text) return;
+  if (isListening) stopMic();
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true; btn.textContent = '…';
+  setStatus('Interpretando...', 'thinking');
+  try {
+    const r = await fetch('/api/parse-text', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({text})
+    }).then(r=>r.json());
+    if (r.ok) {
+      tarefas.push(r.task);
+      if (r.finEntry) financeiro.push(r.finEntry);
+      input.value = '';
+      setStatus('', '');
+      renderTarefas();
+      showToast(r.finEntry ? 'Tarefa + financeiro criados ✓' : 'Tarefa criada ✓');
+    } else {
+      setStatus('', '');
+      showToast('Erro: ' + (r.error || 'desconhecido'), true);
+    }
+  } catch(e) {
+    setStatus('', '');
+    showToast('Erro de conexão', true);
+  }
+  btn.disabled = false; btn.textContent = '+';
 }
 
 // ── Navigation ────────────────────────────────────────────────────
@@ -235,12 +380,7 @@ function switchTab(tab) {
   document.getElementById('tab-'+tab).classList.add('active');
   document.getElementById('content-tarefas').style.display = tab==='tarefas'?'block':'none';
   document.getElementById('content-financeiro').style.display = tab==='financeiro'?'block':'none';
-  if(tab==='financeiro') renderFinanceiro();
-}
-
-function renderActive() {
-  if(activeTab==='tarefas') renderTarefas();
-  else renderFinanceiro();
+  if (tab === 'financeiro') renderFinanceiro();
 }
 
 function setFilter(f) {
@@ -250,128 +390,201 @@ function setFilter(f) {
   renderTarefas();
 }
 
-// ── Tasks ─────────────────────────────────────────────────────────
+// ── Render tasks ──────────────────────────────────────────────────
 function renderTarefas() {
-  let list = tarefas;
-  if(activeFilter==='urgente') list=list.filter(t=>t.urgente==='true');
-  else if(activeFilter==='importante') list=list.filter(t=>t.importante==='true');
-  else if(activeFilter==='pendentes') list=list.filter(t=>t.feito!=='true');
+  let list = tarefas.slice();
+  if (activeFilter === 'urgente') list = list.filter(t=>t.urgente==='true');
+  else if (activeFilter === 'importante') list = list.filter(t=>t.importante==='true');
+  else if (activeFilter === 'pendentes') list = list.filter(t=>t.feito!=='true');
 
   const el = document.getElementById('taskList');
-  if(!list.length){ el.innerHTML=`<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Nenhuma tarefa.<br>Digite ou grave um áudio acima.</div></div>`; return; }
+  if (!list.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Nenhuma tarefa.<br>Digite ou fale acima.</div></div>';
+    return;
+  }
 
   el.innerHTML = list.map(t => {
     let subs = [];
-    try { subs = JSON.parse(t.subtarefas||'[]'); } catch(e){}
-    return `
-    <div class="task-card ${t.feito==='true'?'done':''}" id="tc-${t.id}">
-      <div class="task-row">
-        <div class="tcheck ${t.feito==='true'?'checked':''}" onclick="toggleTask('${t.id}')"></div>
-        <div class="task-body">
-          <div class="task-text">${esc(t.texto)}</div>
-          <div class="task-meta">
-            ${t.urgente==='true'?'<span class="ttag urgente">⚡ urgente</span>':''}
-            ${t.importante==='true'?'<span class="ttag importante">🔵 importante</span>':''}
-            ${t.tag?`<span class="ttag custom">${esc(t.tag)}</span>`:''}
-            <span class="tdate">${t.criadoEm||''}</span>
-          </div>
-          ${subs.length?`<div class="subtasks">${subs.map((s,i)=>`<div class="subi"><div class="subi-check"></div><span class="subi-text">${esc(s)}</span></div>`).join('')}</div>`:''}
-        </div>
-        <button class="task-del" onclick="deleteTask('${t.id}')">✕</button>
-      </div>
-    </div>`;
+    try { subs = JSON.parse(t.subtarefas || '[]'); } catch(e) {}
+    // subs can be strings (old) or objects {texto, feito, subs:[]}
+    subs = subs.map(s => typeof s === 'string' ? {id: s+Math.random(), texto:s, feito:false, subs:[]} : s);
+    const totalLeaf = countLeaf(subs);
+    const doneLeaf = countDoneLeaf(subs);
+    const pct = totalLeaf > 0 ? Math.round(doneLeaf/totalLeaf*100) : 0;
+
+    return '<div class="task-card ' + (t.feito==='true'?'done':'') + '" id="tc-'+t.id+'">' +
+      '<div class="task-main">' +
+        '<div class="tcheck ' + (t.feito==='true'?'checked':'') + '" onclick="toggleTask(\''+t.id+'\')"></div>' +
+        '<div class="task-body">' +
+          '<div class="task-text">' + esc(t.texto) + '</div>' +
+          '<div class="task-meta">' +
+            (t.urgente==='true'?'<span class="ttag urgente">⚡ urgente</span>':'') +
+            (t.importante==='true'?'<span class="ttag importante">🔵 importante</span>':'') +
+            (t.tag?'<span class="ttag custom">'+esc(t.tag)+'</span>':'') +
+            '<span class="tdate">'+esc(t.criadoEm||'')+'</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="task-actions">' +
+          '<button class="tact edit" onclick="openEdit(\''+t.id+'\')">✏</button>' +
+          '<button class="tact del" onclick="deleteTask(\''+t.id+'\')">✕</button>' +
+        '</div>' +
+      '</div>' +
+      (totalLeaf > 0 ? '<div class="task-prog"><div class="task-prog-fill" style="width:'+pct+'%"></div></div>' : '') +
+      renderSubsHTML(t.id, subs) +
+      '</div>';
   }).join('');
 }
 
+function countLeaf(subs) {
+  return subs.reduce((n,s) => n + 1 + ((s.subs||[]).length), 0);
+}
+function countDoneLeaf(subs) {
+  return subs.reduce((n,s) => {
+    const subDone = (s.subs||[]).filter(ss=>ss.feito).length;
+    return n + (s.feito?1:0) + subDone;
+  }, 0);
+}
+
+function renderSubsHTML(tid, subs) {
+  if (!subs.length) {
+    return '<div class="subtasks-wrap">' +
+      '<div class="add-sub-row">' +
+        '<input class="add-sub-input" id="addsub-'+tid+'" placeholder="+ subtarefa..." onkeydown="if(event.key===\'Enter\'){addSub(\''+tid+'\',this)}">' +
+        '<button class="add-sub-btn" onclick="addSub(\''+tid+'\',document.getElementById(\'addsub-'+tid+'\'))">+</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  return '<div class="subtasks-wrap">' +
+    subs.map(s => {
+      const ssubs = s.subs || [];
+      return '<div class="sub-item ' + (s.feito?'done':'') + '" id="sub-'+s.id+'">' +
+        '<div class="sub-check ' + (s.feito?'checked':'') + '" onclick="toggleSub(\''+tid+'\',\''+s.id+'\')"></div>' +
+        '<div class="sub-body">' +
+          '<div class="sub-text">' + esc(s.texto) + '</div>' +
+          // Sub-subtasks
+          (ssubs.length ? '<div class="subsub-wrap">' + ssubs.map(ss =>
+            '<div class="subsub-item ' + (ss.feito?'done':'') + '" id="subsub-'+ss.id+'">' +
+              '<div class="subsub-check ' + (ss.feito?'checked':'') + '" onclick="toggleSubSub(\''+tid+'\',\''+s.id+'\',\''+ss.id+'\')"></div>' +
+              '<span class="subsub-text">' + esc(ss.texto) + '</span>' +
+              '<button class="subsub-del" onclick="delSubSub(\''+tid+'\',\''+s.id+'\',\''+ss.id+'\')">✕</button>' +
+            '</div>'
+          ).join('') + '</div>' : '') +
+          '<div class="add-subsub-row">' +
+            '<input class="add-subsub-input" id="addss-'+tid+'-'+s.id+'" placeholder="+ sub-subtarefa..." onkeydown="if(event.key===\'Enter\'){addSubSub(\''+tid+'\',\''+s.id+'\',this)}">' +
+            '<button class="add-subsub-btn" onclick="addSubSub(\''+tid+'\',\''+s.id+'\',document.getElementById(\'addss-'+tid+'-'+s.id+'\'))">+</button>' +
+          '</div>' +
+        '</div>' +
+        '<button class="sub-del" onclick="delSub(\''+tid+'\',\''+s.id+'\')">✕</button>' +
+      '</div>';
+    }).join('') +
+    '<div class="add-sub-row">' +
+      '<input class="add-sub-input" id="addsub-'+tid+'" placeholder="+ subtarefa..." onkeydown="if(event.key===\'Enter\'){addSub(\''+tid+'\',this)}">' +
+      '<button class="add-sub-btn" onclick="addSub(\''+tid+'\',document.getElementById(\'addsub-'+tid+'\'))">+</button>' +
+    '</div>' +
+  '</div>';
+}
+
+// ── Task actions ──────────────────────────────────────────────────
 async function toggleTask(id) {
   const t = tarefas.find(t=>t.id===id); if(!t) return;
   t.feito = t.feito==='true'?'false':'true';
-  t.concluidoEm = t.feito==='true'?new Date().toLocaleDateString('pt-BR'):'';
+  t.concluidoEm = t.feito==='true' ? new Date().toLocaleDateString('pt-BR') : '';
   renderTarefas();
-  try {
-    await fetch(API+`/api/tarefas/${id}`, { method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({feito:t.feito, concluidoEm:t.concluidoEm}) });
-  } catch(e) { showToast('Erro ao salvar', true); }
+  try { await fetch('/api/tarefas/'+id, {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({feito:t.feito,concluidoEm:t.concluidoEm})}); }
+  catch(e){}
 }
 
 async function deleteTask(id) {
   tarefas = tarefas.filter(t=>t.id!==id);
   renderTarefas();
-  try { await fetch(API+`/api/tarefas/${id}`, {method:'DELETE'}); }
+  try { await fetch('/api/tarefas/'+id, {method:'DELETE'}); }
   catch(e){}
 }
 
-// ── AI Text ───────────────────────────────────────────────────────
-function handleKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendText();} }
-
-async function sendText() {
-  const input = document.getElementById('aiInput');
-  const text = input.value.trim(); if(!text) return;
-  const btn = document.getElementById('sendBtn');
-  btn.disabled=true; btn.textContent='…';
-  try {
-    const r = await fetch(API+'/api/parse-text', {
-      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({text})
-    }).then(r=>r.json());
-    if(r.ok) {
-      tarefas.push(r.task);
-      if(r.finEntry) financeiro.push(r.finEntry);
-      input.value='';
-      renderTarefas();
-      const msg = r.finEntry ? 'Tarefa + financeiro criados ✓' : 'Tarefa criada ✓';
-      showToast(msg);
-      setTimeout(()=>document.getElementById('taskList').scrollIntoView({behavior:'smooth'}),100);
-    } else { showToast('Erro: '+(r.error||'desconhecido'), true); }
-  } catch(e){ showToast('Erro de conexão', true); }
-  btn.disabled=false; btn.textContent='+';
+// ── Edit modal ────────────────────────────────────────────────────
+function openEdit(id) {
+  const t = tarefas.find(t=>t.id===id); if(!t) return;
+  editingId = id;
+  document.getElementById('editInput').value = t.texto;
+  document.getElementById('editModal').classList.add('show');
 }
 
-// ── Audio Recording ───────────────────────────────────────────────
-async function toggleRecording() {
-  if(isRecording) { stopRecording(); return; }
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
-    audioChunks = [];
-    mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-    mediaRecorder.onstop = sendAudio;
-    mediaRecorder.start();
-    isRecording = true;
-    document.getElementById('micBtn').classList.add('recording');
-    document.getElementById('micBtn').textContent = '⏹';
-    showToast('Gravando...');
-  } catch(e){ showToast('Sem permissão para microfone', true); }
+function closeModal() {
+  document.getElementById('editModal').classList.remove('show');
+  editingId = null;
 }
 
-function stopRecording() {
-  if(mediaRecorder&&isRecording) { mediaRecorder.stop(); mediaRecorder.stream.getTracks().forEach(t=>t.stop()); }
-  isRecording=false;
-  document.getElementById('micBtn').classList.remove('recording');
-  document.getElementById('micBtn').textContent='🎙';
+async function saveEdit() {
+  const t = tarefas.find(t=>t.id===editingId); if(!t) return;
+  const newText = document.getElementById('editInput').value.trim();
+  if (!newText) return;
+  t.texto = newText;
+  closeModal();
+  renderTarefas();
+  try { await fetch('/api/tarefas/'+editingId, {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({texto:newText})}); }
+  catch(e){}
+  showToast('Tarefa atualizada ✓');
 }
 
-async function sendAudio() {
-  showToast('Interpretando áudio...');
-  const btn = document.getElementById('sendBtn');
-  btn.disabled=true;
-  try {
-    const blob = new Blob(audioChunks, {type:'audio/webm'});
-    const form = new FormData();
-    form.append('audio', blob, 'audio.webm');
-    const r = await fetch(API+'/api/parse-audio', {method:'POST', body:form}).then(r=>r.json());
-    if(r.ok) {
-      if(r.transcricao) {
-        const tr = document.getElementById('transcricao');
-        tr.textContent = '🎙 "'+r.transcricao+'"';
-        tr.classList.add('show');
-        setTimeout(()=>tr.classList.remove('show'), 5000);
-      }
-      tarefas.push(r.task);
-      if(r.finEntry) financeiro.push(r.finEntry);
-      renderTarefas();
-      showToast(r.finEntry?'Tarefa + financeiro criados ✓':'Tarefa criada ✓');
-    } else { showToast('Erro: '+(r.error||'desconhecido'), true); }
-  } catch(e){ showToast('Erro ao enviar áudio', true); }
-  btn.disabled=false;
+// ── Subtasks ──────────────────────────────────────────────────────
+function getSubsOfTask(tid) {
+  const t = tarefas.find(t=>t.id===tid); if(!t) return [];
+  try { return JSON.parse(t.subtarefas||'[]').map(s=>typeof s==='string'?{id:Date.now()+Math.random(),texto:s,feito:false,subs:[]}:s); }
+  catch(e){ return []; }
+}
+
+async function saveSubs(tid, subs) {
+  const t = tarefas.find(t=>t.id===tid); if(!t) return;
+  t.subtarefas = JSON.stringify(subs);
+  renderTarefas();
+  try { await fetch('/api/tarefas/'+tid, {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({subtarefas:t.subtarefas})}); }
+  catch(e){}
+}
+
+function addSub(tid, inputEl) {
+  const text = inputEl.value.trim(); if(!text) return;
+  const subs = getSubsOfTask(tid);
+  subs.push({id: Date.now().toString(), texto:text, feito:false, subs:[]});
+  inputEl.value = '';
+  saveSubs(tid, subs);
+}
+
+function toggleSub(tid, sid) {
+  const subs = getSubsOfTask(tid);
+  const s = subs.find(s=>s.id===sid); if(!s) return;
+  s.feito = !s.feito;
+  saveSubs(tid, subs);
+}
+
+function delSub(tid, sid) {
+  const subs = getSubsOfTask(tid).filter(s=>s.id!==sid);
+  saveSubs(tid, subs);
+}
+
+function addSubSub(tid, sid, inputEl) {
+  const text = inputEl.value.trim(); if(!text) return;
+  const subs = getSubsOfTask(tid);
+  const s = subs.find(s=>s.id===sid); if(!s) return;
+  if(!s.subs) s.subs = [];
+  s.subs.push({id: Date.now().toString(), texto:text, feito:false});
+  inputEl.value = '';
+  saveSubs(tid, subs);
+}
+
+function toggleSubSub(tid, sid, ssid) {
+  const subs = getSubsOfTask(tid);
+  const s = subs.find(s=>s.id===sid); if(!s) return;
+  const ss = (s.subs||[]).find(ss=>ss.id===ssid); if(!ss) return;
+  ss.feito = !ss.feito;
+  saveSubs(tid, subs);
+}
+
+function delSubSub(tid, sid, ssid) {
+  const subs = getSubsOfTask(tid);
+  const s = subs.find(s=>s.id===sid); if(!s) return;
+  s.subs = (s.subs||[]).filter(ss=>ss.id!==ssid);
+  saveSubs(tid, subs);
 }
 
 // ── Financeiro ────────────────────────────────────────────────────
@@ -379,49 +592,51 @@ function renderFinanceiro() {
   const now = new Date();
   const thisMon = financeiro.filter(f=>{
     if(!f.vencimento) return true;
-    const [,m,y]=f.vencimento.split('/').map(Number);
-    return m===now.getMonth()+1&&y===now.getFullYear();
+    const parts = f.vencimento.split('/');
+    return parseInt(parts[1])===now.getMonth()+1 && parseInt(parts[2])===now.getFullYear();
   });
-  const total=thisMon.reduce((s,f)=>s+(Number(f.valor)||0),0);
-  const recebido=thisMon.filter(f=>f.status==='pago').reduce((s,f)=>s+(Number(f.valor)||0),0);
-  const pendente=total-recebido;
+  const total = thisMon.reduce((s,f)=>s+(Number(f.valor)||0),0);
+  const recebido = thisMon.filter(f=>f.status==='pago').reduce((s,f)=>s+(Number(f.valor)||0),0);
+  const pendente = total - recebido;
 
-  document.getElementById('finSummary').innerHTML=`
-    <div class="fkpi"><div class="fkpi-lbl">Total Mês</div><div class="fkpi-val green">R$${fmtK(total)}</div></div>
-    <div class="fkpi"><div class="fkpi-lbl">Recebido</div><div class="fkpi-val blue">R$${fmtK(recebido)}</div></div>
-    <div class="fkpi"><div class="fkpi-lbl">Pendente</div><div class="fkpi-val orange">R$${fmtK(pendente)}</div></div>`;
+  document.getElementById('finSummary').innerHTML =
+    '<div class="fkpi"><div class="fkpi-lbl">Total Mês</div><div class="fkpi-val green">R$'+fmtK(total)+'</div></div>' +
+    '<div class="fkpi"><div class="fkpi-lbl">Recebido</div><div class="fkpi-val blue">R$'+fmtK(recebido)+'</div></div>' +
+    '<div class="fkpi"><div class="fkpi-lbl">Pendente</div><div class="fkpi-val orange">R$'+fmtK(pendente)+'</div></div>';
 
-  const el=document.getElementById('finList');
-  if(!financeiro.length){ el.innerHTML=`<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">Sem entradas financeiras ainda.</div></div>`; return; }
-
-  el.innerHTML=financeiro.map(f=>{
-    const late=f.status==='pendente'&&isDatePast(f.vencimento);
-    return `<div class="fin-card">
-      <div class="fcheck ${f.status==='pago'?'checked':''}" onclick="togglePago('${f.id}')"></div>
-      <div class="fin-info"><div class="fin-cliente">${esc(f.cliente||'')}</div><div class="fin-desc">${esc(f.descricao||'')}</div></div>
-      <div class="fin-right">
-        <div class="fin-val">R$ ${fmtR(f.valor)}</div>
-        <div class="fin-date">${f.vencimento||''}</div>
-        <span class="fbadge ${late?'atrasado':f.status}">${late?'atrasado':f.status}</span>
-      </div>
-    </div>`;
+  const el = document.getElementById('finList');
+  if (!financeiro.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">💰</div><div class="empty-text">Sem entradas financeiras ainda.</div></div>';
+    return;
+  }
+  el.innerHTML = financeiro.map(f => {
+    const late = f.status==='pendente' && isDatePast(f.vencimento);
+    return '<div class="fin-card">' +
+      '<div class="fcheck ' + (f.status==='pago'?'checked':'') + '" onclick="togglePago(\''+f.id+'\')"></div>' +
+      '<div class="fin-info"><div class="fin-cliente">'+esc(f.cliente||'')+'</div><div class="fin-desc">'+esc(f.descricao||'')+'</div></div>' +
+      '<div class="fin-right"><div class="fin-val">R$ '+fmtR(f.valor)+'</div><div class="fin-date">'+esc(f.vencimento||'')+'</div><span class="fbadge '+(late?'atrasado':f.status)+'">'+(late?'atrasado':f.status)+'</span></div>' +
+    '</div>';
   }).join('');
 }
 
 async function togglePago(id) {
-  const f=financeiro.find(f=>f.id===id); if(!f) return;
-  f.status=f.status==='pago'?'pendente':'pago';
+  const f = financeiro.find(f=>f.id===id); if(!f) return;
+  f.status = f.status==='pago'?'pendente':'pago';
   renderFinanceiro();
-  try { await fetch(API+`/api/financeiro/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:f.status})}); showToast(f.status==='pago'?'Marcado como pago ✓':'Desmarcado'); }
-  catch(e){ showToast('Erro ao salvar',true); }
+  try { await fetch('/api/financeiro/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:f.status})}); }
+  catch(e){}
+  showToast(f.status==='pago'?'Marcado como pago ✓':'Desmarcado');
 }
 
 // ── Utils ─────────────────────────────────────────────────────────
-function isDatePast(s){ if(!s) return false; const[d,m,y]=s.split('/').map(Number); return new Date(y,m-1,d)<new Date(); }
+function isDatePast(s){ if(!s) return false; const p=s.split('/'); return new Date(p[2],p[1]-1,p[0])<new Date(); }
 function fmtR(v){ return Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2}); }
 function fmtK(v){ return v>=1000?(v/1000).toFixed(1)+'k':String(Math.round(v||0)); }
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function showToast(msg,isErr=false){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast'+(isErr?' err':''); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+
+// Close modal on overlay click
+document.getElementById('editModal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
 
 init();
 </script>
